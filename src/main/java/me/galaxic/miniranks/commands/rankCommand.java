@@ -35,12 +35,12 @@ public class rankCommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("rank")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (args[0].equalsIgnoreCase("give")) {
+                if (args[0].equalsIgnoreCase("set")) {
                     if (args.length == 3) {
                         String playerTarget = args[1];
                         String rank = args[2];
                         if (playerTarget != null) {
-                            if (player.hasPermission("miniranks.give")) {
+                            if (player.hasPermission("miniranks.rank.give")) {
                                 if (player.getServer().getPlayer(playerTarget) != null) {
                                     Player target = player.getServer().getPlayer(playerTarget);
                                     UUID tUUID = target.getUniqueId();
@@ -71,7 +71,7 @@ public class rankCommand implements CommandExecutor {
 
                 } else if (args[0].equalsIgnoreCase("create")) {
                     if (args.length == 3) {
-                        if (player.hasPermission("miniranks.create")) {
+                        if (player.hasPermission("miniranks.rank.create")) {
                             String rank = args[1];
                             String prefix = args[2];
                             if (prefix != null) {
@@ -91,7 +91,7 @@ public class rankCommand implements CommandExecutor {
                             }
                         }
                     } else if (args.length == 2) {
-                        if (player.hasPermission("miniranks.create")) {
+                        if (player.hasPermission("miniranks.rank.create")) {
                             String rank = args[1];
                             if (!miniranks.getRankManager().checkRank(rank)) {
                                 try {
@@ -110,45 +110,25 @@ public class rankCommand implements CommandExecutor {
                         }
                     }
 
-                } else if (args[0].equalsIgnoreCase("list2")) {
-                    // make a GUI with all the ranks and their prefixes
-                    // for each rank add a glass pane with the color of the rank and the prefix in the lore
-                    Inventory inv = Bukkit.createInventory(null, 18, "Ranks");
-                    for (String rank : miniranks.getRankManager().getRanks()) {
-
-                        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
-                        ItemMeta meta = item.getItemMeta();
-                        assert meta != null;
-                        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rank));
-
-                        try {
-                            PreparedStatement ps = miniranks.getDatabase().getConnection().prepareStatement("SELECT * FROM " + miniranks.getRankTable() + " WHERE NAME = ?");
-                            ps.setString(1, rank);
-                            ResultSet rs = ps.executeQuery();
-                            if (rs.next()) {
-                                String prefix = rs.getString("PREFIX");
-                                String rankName = rs.getString("NAME");
-
-                                ArrayList<String> lore = new ArrayList<>();
-                                lore.add(ChatColor.GRAY + "Rank: " + ChatColor.translateAlternateColorCodes('&', rankName));
-                                if (prefix != null) {
-                                    lore.add("Prefix: " + ChatColor.translateAlternateColorCodes('&', prefix));
-                                } else {
-                                    lore.add(ChatColor.GRAY + "Prefix: " + ChatColor.RED + "None");
-                                }
-                                meta.setLore(lore);
-                            }
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        item.setItemMeta(meta);
-                        inv.setItem(inv.firstEmpty(), item);
-                    }
-
-                    player.openInventory(inv);
-
                 } else if (args[0].equalsIgnoreCase("delete")) {
+                    if (player.hasPermission("miniranks.rank.delete")) {
+                        String rank = args[1];
+                        if (!miniranks.getRankManager().checkRank(rank)) {
+                            // delete the rank from the database
+                            try {
+                                PreparedStatement ps = miniranks.getDatabase().getConnection().prepareStatement("DELETE FROM " + miniranks.getRankTable() + " WHERE NAME = ?");
+                                ps.setString(1, rank);
+                                ps.executeUpdate();
+                                player.sendMessage(ChatColor.GREEN + "Successfully deleted rank " + ChatColor.translateAlternateColorCodes('&', rank));
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            player.sendMessage(ChatColor.RED + "This rank does not exist");
+                        }
+                    } else {
+                        player.sendMessage(ChatColor.RED + "/rank create <rank> <prefix>");
+                    }
 
                 }
             }

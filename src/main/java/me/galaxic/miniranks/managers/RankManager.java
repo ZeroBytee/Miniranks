@@ -17,9 +17,6 @@ public class RankManager {
     }
 
     public boolean checkRank(String rank) {
-        // check if the rank exists
-        // if it does, return true
-        // if it doesn't, return false
         try {
             PreparedStatement ps = miniranks.getDatabase().getConnection().prepareStatement("SELECT * FROM " + miniranks.getRankTable() + " WHERE NAME = ?");
             ps.setString(1, rank);
@@ -43,19 +40,14 @@ if          (rs.next()) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 String rank = rs.getString("PLAYER_RANK");
-                System.out.println("Rank: " + rank);
                 PreparedStatement psr = miniranks.getDatabase().getConnection().prepareStatement("SELECT * FROM " + miniranks.getRankTable() + " WHERE NAME = ?");
                 psr.setString(1, rank);
                 ResultSet rsr = psr.executeQuery();
                 if (rsr.next()) {
                     String prefix = rsr.getString("PREFIX");
-                    System.out.println("Prefix: " + prefix);
                     if (prefix != null) {
-                        System.out.println("Prefix is not null");
                         miniranks.getNametagManager().setNameTags(player, rank, true, prefix);
                         miniranks.getNametagManager().newTag(player, rank);
-                    } else {
-                        System.out.println("Prefix is null");
                     }
                 }
 
@@ -107,6 +99,20 @@ if          (rs.next()) {
             ps.setString(1, rank);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
+
+            // get the prefix for the rank
+            PreparedStatement psp = miniranks.getDatabase().getConnection().prepareStatement("SELECT * FROM " + miniranks.getRankTable() + " WHERE NAME = ?");
+            psp.setString(1, rank);
+            ResultSet rsp = psp.executeQuery();
+            if (rsp.next()) {
+                String prefix = rsp.getString("PREFIX");
+                if (prefix != null) {
+                    miniranks.getNametagManager().setNameTags(player, rank, true, prefix);
+                    miniranks.getNametagManager().newTag(player, rank);
+                }
+            }
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

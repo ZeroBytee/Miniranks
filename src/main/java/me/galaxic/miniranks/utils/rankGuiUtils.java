@@ -19,7 +19,6 @@ public class rankGuiUtils {
 
         // arraylist for online players
         ArrayList<Player> list = new ArrayList<Player>(player.getServer().getOnlinePlayers());
-        System.out.println("List: " + list);
 
         // arraylist for all items in the inventory
         ArrayList<ItemStack> items = new ArrayList<>();
@@ -27,7 +26,6 @@ public class rankGuiUtils {
         Inventory players = Bukkit.createInventory(null, 45,   ChatColor.DARK_GREEN +
                 ChatColor.translateAlternateColorCodes('&', "&lOnline Players - " + page));
         for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.size());
             int ping = list.get(i).getPing();
 
             ItemStack pHead = new ItemStack(Material.PLAYER_HEAD, 1);
@@ -52,7 +50,7 @@ public class rankGuiUtils {
         if (pageUtil.isPageValid(items, page - 1, 43)) {
             left = new ItemStack(Material.ARROW);
             leftMeta = left.getItemMeta();
-            leftMeta.setDisplayName(ChatColor.RED + "<< Previous Page");
+            leftMeta.setDisplayName(ChatColor.GREEN + "<< Previous Page");
 
         } else {
             left = new ItemStack(Material.BARRIER);

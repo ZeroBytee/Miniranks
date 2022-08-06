@@ -7,6 +7,7 @@ import me.galaxic.miniranks.listeners.chatListener;
 import me.galaxic.miniranks.listeners.onJoin;
 import me.galaxic.miniranks.managers.NametagManager;
 import me.galaxic.miniranks.managers.RankManager;
+import me.galaxic.miniranks.tabCompleter.rankTab;
 import me.galaxic.miniranks.utils.rankGuiUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,12 +40,12 @@ public final class Miniranks extends JavaPlugin {
             throw new RuntimeException(e);
         }
         if (database.isConnected()) {
-            System.out.println("Connected to database");
+            System.out.println("[MiniRanks Debug] Connected to database");
             database.createTable();
         }
         loadCommands();
 
-        // loop to make sure the database doesnt disconnect
+        // loop to make sure the database doesn't disconnect
         int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
@@ -82,6 +83,10 @@ public final class Miniranks extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GuiListener(this), this);
         // register commands
         Objects.requireNonNull(getCommand("rank")).setExecutor(new rankCommand(this));
+        // tab complete for rank command
+        Objects.requireNonNull(getCommand("rank")).setTabCompleter(new rankTab());
+
+
         Objects.requireNonNull(getCommand("players")).setExecutor(new playersCommand(this));
     }
 

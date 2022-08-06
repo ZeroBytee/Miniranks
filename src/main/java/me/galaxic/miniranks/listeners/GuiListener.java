@@ -24,7 +24,6 @@ public class GuiListener implements Listener {
 
         if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains(ChatColor.DARK_GREEN +
                 ChatColor.translateAlternateColorCodes('&', "&lOnline Players"))) {
-
             int page = Integer.parseInt(e.getInventory().getItem(36).getItemMeta().getLocalizedName());
             if (e.getRawSlot() == 36 && e.getCurrentItem().getType().equals(Material.ARROW)) {
                 Player player = (Player) e.getWhoClicked();
@@ -45,26 +44,30 @@ public class GuiListener implements Listener {
 
             e.setCancelled(true);
 
-        } else if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains(ChatColor.GREEN + "" + ChatColor.BOLD + "Change player rank")) {
+        } else if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains(ChatColor.GREEN + "Change rank")) {
             if (e.getCurrentItem().getType().equals(Material.GREEN_STAINED_GLASS_PANE)) {
-                String rank = ChatColor.stripColor(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName());
+                String rank = Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getLocalizedName();
                 Player player = (Player) e.getWhoClicked();
-                System.out.println(player);
-                Player target = player.getServer().getPlayer(ChatColor.stripColor(e.getView().getTitle().replace("Change player rank - ", "")));
+                String targetString = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(8)).getItemMeta()).getLocalizedName();
+                Player target = player.getServer().getPlayer(targetString);
                 assert target != null;
                 miniranks.getRankManager().setRank(target, rank);
                 player.closeInventory();
-                target.sendMessage(ChatColor.GREEN + "Your rank has been changed to " + rank);
-                player.sendMessage(ChatColor.GREEN + "You have changed " + target.getName() + "'s rank to " + rank);
+                player.sendMessage(ChatColor.GREEN + "You have changed " + target.getName() + "'s rank to " +
+                        ChatColor.translateAlternateColorCodes('&', rank));
+                target.sendMessage(ChatColor.GREEN + "Your rank has been changed to " + ChatColor.translateAlternateColorCodes('&', rank));
             }
 
-            int page = Integer.parseInt(e.getInventory().getItem(0).getItemMeta().getLocalizedName());
-            if (e.getRawSlot() == 36 && e.getCurrentItem().getType().equals(Material.ARROW)) {
-                Player player = (Player) e.getWhoClicked();
-                new rankGuiUtils(player, page - 1, miniranks);
-            } else if (e.getRawSlot() == 44 && e.getCurrentItem().getType().equals(Material.ARROW)) {
-                Player player = (Player) e.getWhoClicked();
-                new rankGuiUtils(player, page + 1, miniranks);
+            int page = Integer.parseInt(Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(0)).getItemMeta()).getLocalizedName());
+            String targetString = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(8)).getItemMeta()).getLocalizedName();
+            Player player = (Player) e.getWhoClicked();
+            Player target = player.getServer().getPlayer(targetString);
+            if (e.getRawSlot() == 0 && e.getCurrentItem().getType().equals(Material.ARROW)) {
+                assert target != null;
+                new managePlayerGuiUtils(player, target, page - 1, miniranks);
+            } else if (e.getRawSlot() == 8 && e.getCurrentItem().getType().equals(Material.ARROW)) {
+                assert target != null;
+                new managePlayerGuiUtils(player, target, page + 1, miniranks);
             }
 
 

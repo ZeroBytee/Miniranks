@@ -21,7 +21,6 @@ public class NametagManager {
     public void setNameTags(Player player, String rank, boolean prefixEnabled, String prefix) {
         Scoreboard pscore = player.getScoreboard();
         player.setScoreboard(pscore);
-        System.out.println("Setting name tags for " + player.getName() + " with rank " + rank + " and prefix enabled: " + prefixEnabled);
         if (pscore.getTeam(ChatColor.translateAlternateColorCodes('&', rank)) != null) {
             Team team = pscore.getTeam(ChatColor.translateAlternateColorCodes('&', rank));
             if (team != null) {
@@ -32,9 +31,6 @@ public class NametagManager {
                 String rank2 = ChatColor.translateAlternateColorCodes('&', prefix);
                 team1.setPrefix(ChatColor.WHITE + "[" + rank2 + ChatColor.WHITE + "] ");
                 player.setPlayerListName(ChatColor.WHITE + "[" + rank2 + ChatColor.WHITE + "] " + player.getName());
-                System.out.println("[Miniranks] " + player.getName() + " has a prefix of " + rank2);
-            } else {
-                System.out.println("Prefix is not enabled for this rank.");
             }
 
         } else {
@@ -43,9 +39,6 @@ public class NametagManager {
                 String rank2 = ChatColor.translateAlternateColorCodes('&', prefix);
                 team1.setPrefix(ChatColor.WHITE + "[" + rank2 + ChatColor.WHITE + "] ");
                 player.setPlayerListName(ChatColor.WHITE + "[" + rank2 + ChatColor.WHITE + "] " + player.getName());
-                System.out.println("[Miniranks] " + player.getName() + " has a prefix of " + rank2);
-            }else {
-                System.out.println("Prefix is not enabled for this rank.");
             }
         }
     }

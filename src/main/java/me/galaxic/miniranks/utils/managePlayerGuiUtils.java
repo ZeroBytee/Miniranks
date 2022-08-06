@@ -19,7 +19,7 @@ public class managePlayerGuiUtils {
 
     public managePlayerGuiUtils(Player player, Player target, int page, Miniranks miniranks) {
 
-        Inventory gui = Bukkit.createInventory(null, 9, "Ranks");
+        Inventory gui = Bukkit.createInventory(null, 9, ChatColor.GREEN + "Change rank - " + target.getName());
 
         List<ItemStack> allItems = new ArrayList<>();
         ArrayList<String> ranks = miniranks.getRankManager().getRanks();
@@ -50,6 +50,7 @@ public class managePlayerGuiUtils {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            meta.setLocalizedName(rank + "");
             meta.setLore(lore);
             item.setItemMeta(meta);
 
@@ -63,17 +64,16 @@ public class managePlayerGuiUtils {
             left = new ItemStack(Material.ARROW, 1);
             leftMeta = left.getItemMeta();
             assert leftMeta != null;
-            leftMeta.setDisplayName(ChatColor.RED + "<< Previous Page");
-            left.setItemMeta(leftMeta);
-            gui.setItem(0, left);
+            leftMeta.setDisplayName(ChatColor.GREEN + "<< Previous Page");
         } else {
             left = new ItemStack(Material.BARRIER, 1);
             leftMeta = left.getItemMeta();
             assert leftMeta != null;
             leftMeta.setDisplayName(ChatColor.RED + "<< Previous Page");
-            left.setItemMeta(leftMeta);
-            gui.setItem(0, left);
         }
+        leftMeta.setLocalizedName(page + "");
+        left.setItemMeta(leftMeta);
+        gui.setItem(0, left);
 
         ItemStack right;
         ItemMeta rightMeta;
@@ -82,16 +82,21 @@ public class managePlayerGuiUtils {
             rightMeta = right.getItemMeta();
             assert rightMeta != null;
             rightMeta.setDisplayName(ChatColor.GREEN + "Next Page >>");
-            right.setItemMeta(rightMeta);
-            gui.setItem(8, right);
         } else {
             right = new ItemStack(Material.BARRIER, 1);
             rightMeta = right.getItemMeta();
             assert rightMeta != null;
-            rightMeta.setDisplayName(ChatColor.GREEN + "Next Page >>");
-            right.setItemMeta(rightMeta);
-            gui.setItem(8, right);
+            rightMeta.setDisplayName(ChatColor.RED + "Next Page >>");
         }
+        rightMeta.setLocalizedName(target.getDisplayName() + "");
+        right.setItemMeta(rightMeta);
+        gui.setItem(8, right);
+
+        for (ItemStack is : pageUtil.getPageItems(allItems, page, 7)) {
+            gui.addItem(is);
+        }
+
+        player.openInventory(gui);
     }
 
 }
