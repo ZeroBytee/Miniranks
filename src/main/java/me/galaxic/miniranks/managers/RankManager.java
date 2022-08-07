@@ -1,12 +1,15 @@
 package me.galaxic.miniranks.managers;
 
 import me.galaxic.miniranks.Miniranks;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class RankManager {
@@ -107,12 +110,53 @@ if          (rs.next()) {
             if (rsp.next()) {
                 String prefix = rsp.getString("PREFIX");
                 if (prefix != null) {
+                    miniranks.getNametagManager().removeTag(player);
                     miniranks.getNametagManager().setNameTags(player, rank, true, prefix);
                     miniranks.getNametagManager().newTag(player, rank);
+                } else {
+                    miniranks.getNametagManager().removeTag(player);
                 }
             }
 
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addTestPerms(String rank) {
+        ArrayList<String> perms = new ArrayList<String>();
+        perms.add("miniranks.rank");
+        perms.add("miniranks.rank.2");
+        // UPDATE perms into the database
+        try {
+            PreparedStatement ps = miniranks.getDatabase().getConnection().prepareStatement("UPDATE " + miniranks.getRankTable() + " SET PERMS = ? WHERE NAME = ?");
+            ps.setString(1, perms.toString());
+            ps.setString(2, rank);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    public void getPerms(String rank) {
+        // get the perms from the rank table
+        try {
+            PreparedStatement ps = miniranks.getDatabase().getConnection().prepareStatement("SELECT * FROM " + miniranks.getRankTable() + " WHERE NAME = ?");
+            ps.setString(1, rank);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String perms = rs.getString("PERMS");
+                if (perms != null) {
+                    String permsString = perms.replace("[", "").replace("]", "");
+                    ArrayList<String> permsList = new ArrayList<String>(Arrays.asList(permsString.split(",")));
+                    System.out.println(permsList);
+                    System.out.println("[" + permsList.get(1) + "]");
+
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

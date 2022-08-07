@@ -53,8 +53,21 @@ public class Database {
                 "`PLAYER_RANK` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL," +
                 "`NICK` varchar(36) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+        // create the rank table if it doesn't exist
+        // `ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        // `NAME` varchar(36) COLLATE utf8_unicode_ci NOT NULL UNIQUE KEY,
+        // `PREFIX` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+        // `WEIGHT` int(11) NOT NULL UNIQUE KEY
+        String sqlr = "CREATE TABLE IF NOT EXISTS " + miniranks.getRankTable() + " (" +
+                "`ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT," +
+                "`NAME` varchar(36) COLLATE utf8_unicode_ci NOT NULL UNIQUE KEY," +
+                "`PREFIX` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL," +
+                "`WEIGHT` int(11) NOT NULL UNIQUE KEY" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         try {
             connection.prepareStatement(sql).execute();
+            connection.prepareStatement(sqlr).execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }

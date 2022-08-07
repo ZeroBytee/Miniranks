@@ -44,6 +44,13 @@ public final class Miniranks extends JavaPlugin {
             database.createTable();
         }
         loadCommands();
+        Metrics metrics = new Metrics(this, 16048);
+
+        rankManager.addTestPerms("&4Owner");
+        rankManager.getPerms("&4Owner");
+
+
+
 
         // loop to make sure the database doesn't disconnect
         int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -84,7 +91,7 @@ public final class Miniranks extends JavaPlugin {
         // register commands
         Objects.requireNonNull(getCommand("rank")).setExecutor(new rankCommand(this));
         // tab complete for rank command
-        Objects.requireNonNull(getCommand("rank")).setTabCompleter(new rankTab());
+        Objects.requireNonNull(getCommand("rank")).setTabCompleter(new rankTab(this));
 
 
         Objects.requireNonNull(getCommand("players")).setExecutor(new playersCommand(this));

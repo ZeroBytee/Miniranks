@@ -113,7 +113,7 @@ public class rankCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("delete")) {
                     if (player.hasPermission("miniranks.rank.delete")) {
                         String rank = args[1];
-                        if (!miniranks.getRankManager().checkRank(rank)) {
+                        if (miniranks.getRankManager().checkRank(rank)) {
                             // delete the rank from the database
                             try {
                                 PreparedStatement ps = miniranks.getDatabase().getConnection().prepareStatement("DELETE FROM " + miniranks.getRankTable() + " WHERE NAME = ?");

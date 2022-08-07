@@ -79,11 +79,8 @@ public class rankGuiUtils {
             players.setItem(players.firstEmpty(), is);
         }
 
-
         player.openInventory(players);
     }
-
-
 
     /*
     * // arraylist for online players

@@ -1,5 +1,6 @@
 package me.galaxic.miniranks.tabCompleter;
 
+import me.galaxic.miniranks.Miniranks;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class rankTab implements TabCompleter {
+
+    private Miniranks miniranks;
+    public rankTab(Miniranks plugin) {
+        this.miniranks = plugin;
+    }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
@@ -30,11 +36,14 @@ public class rankTab implements TabCompleter {
             } else if (args[0].equalsIgnoreCase("create")) {
                 return StringUtil.copyPartialMatches(args[1], Collections.singletonList("<rank>"), new ArrayList<>());
             } else if (args[0].equalsIgnoreCase("delete")) {
-                return StringUtil.copyPartialMatches(args[1], Collections.singletonList("<rank>"), new ArrayList<>());
+                List<String> ranks = miniranks.getRankManager().getRanks();
+                return StringUtil.copyPartialMatches(args[1], ranks, new ArrayList<>());
             }
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("set")) {
-                return StringUtil.copyPartialMatches(args[2], Collections.singletonList("<rank>"), new ArrayList<>());
+                // get all the ranks from the database and for each rank, add it to the list
+                List<String> ranks = miniranks.getRankManager().getRanks();
+                return StringUtil.copyPartialMatches(args[2], ranks, new ArrayList<>());
             } else if (args[0].equalsIgnoreCase("create")) {
                 return StringUtil.copyPartialMatches(args[2], Collections.singletonList("<prefix>"), new ArrayList<>());
             }
