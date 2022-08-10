@@ -1,0 +1,38 @@
+name: Miniranks
+version: '${project.version}'
+main: me.galaxic.miniranks.Miniranks
+api-version: 1.18
+authors: [ Galaxic ]
+description: MiniRanks is a simple rank plugin that is made to be the most simple it can be
+
+commands:
+  miniranks:
+    description: "Manage ranks"
+    aliases:
+      - mrank
+      - rank
+      - ranks
+      - mranks
+      - minirank
+  players:
+    description: "Manage players"
+
+permissions:
+  miniranks.rank.set:
+    description: "Set a player's rank"
+  miniranks.rank.create:
+    description: "Create a rank"
+  miniranks.rank.delete:
+      description: "Delete a rank"
+  miniranks.rank.perms.manage:
+      description: "Manage rank permissions"
+  miniranks.rank.perms.add:
+    description: "Add a permission to a rank"
+  miniranks.rank.perms.remove:
+    description: "Remove a permission from a rank"
+  miniranks.players:
+    description: "Manage players"
+
+
+
+
