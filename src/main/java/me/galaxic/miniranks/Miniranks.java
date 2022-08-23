@@ -10,11 +10,13 @@ import me.galaxic.miniranks.managers.RankManager;
 import me.galaxic.miniranks.tabCompleter.rankTab;
 import me.galaxic.miniranks.utils.rankGuiUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -42,15 +44,11 @@ public final class Miniranks extends JavaPlugin {
         if (database.isConnected()) {
             System.out.println("[MiniRanks Debug] Connected to database");
             database.createTable();
+        } else {
+            System.out.println("[MiniRanks Debug] Couldn't connect to database");
         }
         loadCommands();
         Metrics metrics = new Metrics(this, 16048);
-
-        rankManager.addTestPerms("&4Owner");
-        rankManager.getPerms("&4Owner");
-
-
-
 
         // loop to make sure the database doesn't disconnect
         int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -89,9 +87,9 @@ public final class Miniranks extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new chatListener(this), this);
         getServer().getPluginManager().registerEvents(new GuiListener(this), this);
         // register commands
-        Objects.requireNonNull(getCommand("rank")).setExecutor(new rankCommand(this));
+        Objects.requireNonNull(getCommand("miniranks")).setExecutor(new rankCommand(this));
         // tab complete for rank command
-        Objects.requireNonNull(getCommand("rank")).setTabCompleter(new rankTab(this));
+        Objects.requireNonNull(getCommand("miniranks")).setTabCompleter(new rankTab(this));
 
 
         Objects.requireNonNull(getCommand("players")).setExecutor(new playersCommand(this));
@@ -131,6 +129,8 @@ public final class Miniranks extends JavaPlugin {
     public String getDefaultRank() {
         return defaultRank;
     }
+
+
 }
 
 

@@ -17,8 +17,8 @@ public class NametagManager {
     public NametagManager(Miniranks plugin) {
         this.miniranks = plugin;
     }
-
     public void setNameTags(Player player, String rank, boolean prefixEnabled, String prefix) {
+
         Scoreboard pscore = player.getScoreboard();
         player.setScoreboard(pscore);
         if (pscore.getTeam(ChatColor.translateAlternateColorCodes('&', rank)) != null) {
@@ -60,6 +60,5 @@ public class NametagManager {
             }
         }
     }
-
 
 }

@@ -58,12 +58,14 @@ public class Database {
         // `ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         // `NAME` varchar(36) COLLATE utf8_unicode_ci NOT NULL UNIQUE KEY,
         // `PREFIX` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+        // `PERMS` , longtext COLLATE utf8_unicode_ci DEFAULT NULL
         // `WEIGHT` int(11) NOT NULL UNIQUE KEY
         String sqlr = "CREATE TABLE IF NOT EXISTS " + miniranks.getRankTable() + " (" +
                 "`ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT," +
                 "`NAME` varchar(36) COLLATE utf8_unicode_ci NOT NULL UNIQUE KEY," +
                 "`PREFIX` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL," +
-                "`WEIGHT` int(11) NOT NULL UNIQUE KEY" +
+                "`PERMS` longtext COLLATE utf8_unicode_ci DEFAULT NULL," +
+                "`WEIGHT` int(11) NULL UNIQUE KEY" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         try {
             connection.prepareStatement(sql).execute();

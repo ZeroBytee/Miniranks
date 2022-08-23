@@ -43,6 +43,7 @@ public class rankGuiUtils {
 
             pHead.setItemMeta(meta);
             players.setItem(i, pHead);
+            items.add(pHead);
         }
 
         ItemStack left;

@@ -1,6 +1,7 @@
 package me.galaxic.miniranks.listeners;
 
 import me.galaxic.miniranks.Miniranks;
+import me.galaxic.miniranks.utils.permsGuiUtils;
 import me.galaxic.miniranks.utils.rankGuiUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -9,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import me.galaxic.miniranks.utils.managePlayerGuiUtils;
+import me.galaxic.miniranks.utils.pluginsGuiUtils;
+import org.bukkit.permissions.Permission;
 
 import java.util.Objects;
 
@@ -72,9 +75,81 @@ public class GuiListener implements Listener {
 
 
             e.setCancelled(true);
+        } else if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains(ChatColor.DARK_GREEN + "Change Perms") &&
+                !e.getView().getTitle().contains("-")) {
+            if (e.getCurrentItem().getType().equals(Material.GREEN_STAINED_GLASS_PANE)) {
+                // get plugin name from item and open the next gui
+                String plugin = ChatColor.stripColor(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName());
+                String rank = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(44)).getItemMeta()).getLocalizedName();
+                Player player = (Player) e.getWhoClicked();
+                new permsGuiUtils(player, rank, plugin,1, miniranks);
+            }
+
+            int page = Integer.parseInt(Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(36)).getItemMeta()).getLocalizedName());
+            Player player = (Player) e.getWhoClicked();
+            String rank = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(44)).getItemMeta()).getLocalizedName();
+            if (e.getRawSlot() == 36 && e.getCurrentItem().getType().equals(Material.ARROW)) {
+                new pluginsGuiUtils(player, rank, page - 1, miniranks);
+            } else if (e.getRawSlot() == 44 && e.getCurrentItem().getType().equals(Material.ARROW)) {
+                new pluginsGuiUtils(player, rank, page + 1, miniranks);
+            }
+
+
+
+            e.setCancelled(true);
+        }else if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains(ChatColor.DARK_GREEN + "Change Perms - ")) {
+            if (e.getCurrentItem().getType().equals(Material.GREEN_STAINED_GLASS_PANE)) {
+                // remove perm
+                Player player = (Player) e.getWhoClicked();
+               if (player.hasPermission("miniranks.rank.perms.manage")) {
+                   String perm = Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getLocalizedName();
+                   String rank = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(44)).getItemMeta()).getLocalizedName();
+                   String plugin = ChatColor.stripColor(e.getView().getTitle().replace(ChatColor.DARK_GREEN + "Change Perms - ", ""));
+
+                   String page2 = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(36)).getItemMeta()).getLocalizedName();
+                   int page = Integer.parseInt(page2);
+
+                   player.sendMessage(ChatColor.GREEN + "Successfully removed " + '"' + perm + '"' + " to " + rank);
+                   miniranks.getRankManager().removePerm(perm, rank);
+                   player.closeInventory();
+                   new permsGuiUtils(player, rank, plugin, page, miniranks);
+
+               } else {
+                     player.sendMessage(ChatColor.RED + "You do not have permission to remove perms");
+               }
+
+            } else if (e.getCurrentItem().getType().equals(Material.RED_STAINED_GLASS_PANE)) {
+                // add perm
+                Player player = (Player) e.getWhoClicked();
+                if (player.hasPermission("miniranks.rank.perms.manage")) {
+                    String perm = Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getLocalizedName();
+                    String rank = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(44)).getItemMeta()).getLocalizedName();
+                    String plugin = ChatColor.stripColor(e.getView().getTitle().replace(ChatColor.DARK_GREEN + "Change Perms - ", ""));
+
+
+                    String page2 = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(36)).getItemMeta()).getLocalizedName();
+                    int page = Integer.parseInt(page2);
+                    miniranks.getRankManager().addPerm(perm, rank);
+                    player.sendMessage(ChatColor.GREEN + "Successfully added " + '"' + perm + '"' + " to " + rank);
+                    player.closeInventory();
+                    new permsGuiUtils(player, rank, plugin, page, miniranks);
+                } else {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to add perms");
+                }
+            }
+
+            int page = Integer.parseInt(Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(36)).getItemMeta()).getLocalizedName());
+            Player player = (Player) e.getWhoClicked();
+            String rank = Objects.requireNonNull(Objects.requireNonNull(e.getInventory().getItem(44)).getItemMeta()).getLocalizedName();
+            String plugin = e.getView().getTitle().replace(ChatColor.DARK_GREEN + "Change Perms - ", "");
+            plugin = ChatColor.stripColor(plugin);
+            if (e.getRawSlot() == 36 && e.getCurrentItem().getType().equals(Material.ARROW)) {
+                new permsGuiUtils(player, rank, plugin, page - 1, miniranks);
+            } else if (e.getRawSlot() == 44 && e.getCurrentItem().getType().equals(Material.ARROW)) {
+                new permsGuiUtils(player, rank, plugin, page + 1, miniranks);
+            }
+
+            e.setCancelled(true);
         }
-
     }
-
-
 }
